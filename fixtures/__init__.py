@@ -6,8 +6,8 @@ written today claims an alert started weeks ago when you clone it next month,
 which silently breaks any judgment that compares alert age to deployment age.
 
 Found the hard way. Live Jev returned deployment_related=0.45 on a fixture
-called "deployment-regression" because the alerts predated the deploy by
-102 minutes. It was reading the data correctly; the data was wrong.
+called "deployment-regression" because the alerts predated the deploy by well
+over an hour. It was reading the data correctly; the data was wrong.
 """
 from __future__ import annotations
 

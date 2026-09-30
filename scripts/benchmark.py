@@ -27,8 +27,20 @@ FIXTURES = ["production-outage.json", "dev-cpu-spike.json",
 QUESTIONS_PER_INCIDENT = 6   # 4 Noul + 1 Choice + 1 Score, one request
 
 
+def p95(values: list[float]) -> float:
+    """Linear-interpolated 95th percentile.
+
+    Same convention as numpy's default and statistics.quantiles(inclusive).
+    The obvious `srt[int(len(srt) * 0.95)]` is not a p95: at n=40 it returns
+    the 39th of 40 samples, which is the 97.5th percentile.
+    """
+    if len(values) < 2:
+        return values[0] if values else 0.0
+    return statistics.quantiles(values, n=100, method="inclusive")[94]
+
+
 def main() -> int:
-    runs = int(os.getenv("BENCH_RUNS", "25"))
+    runs = int(os.getenv("BENCH_RUNS", "40"))
     lat, toks, fallbacks, priorities, reviews = [], [], 0, {}, 0
 
     for i in range(runs):
@@ -58,7 +70,7 @@ def main() -> int:
     print(f"questions evaluated:   {len(lat) * QUESTIONS_PER_INCIDENT}   "
           f"({QUESTIONS_PER_INCIDENT} per request, one parallel pass)")
     print(f"median latency:        {statistics.median(srt):.1f} ms")
-    print(f"p95 latency:           {srt[min(len(srt) - 1, int(len(srt) * 0.95))]:.1f} ms")
+    print(f"p95 latency:           {p95(srt):.1f} ms")
     print(f"mean input tokens:     {statistics.mean(toks) if any(toks) else 0:.0f}")
     print(f"fallbacks (Jev down):  {fallbacks}")
     print(f"escalated for review:  {reviews}  ({reviews / n * 100:.0f}%)")
