@@ -1,23 +1,73 @@
 {
+  "_alert_age_minutes": 7,
   "version": "4",
   "status": "firing",
   "alerts": [
-    { "status": "firing", "startsAt": "2026-09-30T10:54:58.006105Z",
-      "labels": {"alertname":"HighHttpErrorRate","service":"checkout-api","namespace":"prod","severity":"critical","team":"platform"},
-      "annotations": {"value":"0.23"} },
-    { "status": "firing", "startsAt": "2026-09-30T10:54:58.006105Z",
-      "labels": {"alertname":"KubernetesPodCrashLooping","service":"checkout-api","namespace":"prod","severity":"warning"},
-      "annotations": {"value":"18"} },
-    { "status": "firing", "startsAt": "2026-09-30T10:54:58.006105Z",
-      "labels": {"alertname":"HighLatency","service":"checkout-api","namespace":"prod","severity":"warning"},
-      "annotations": {"value":"4200"} },
-    { "status": "firing", "startsAt": "2026-09-30T10:54:58.006105Z",
-      "labels": {"alertname":"DatabaseConnectionPoolHigh","service":"checkout-api","namespace":"prod","severity":"warning"},
-      "annotations": {"value":"0.91"} }
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "HighHttpErrorRate",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "critical",
+        "team": "platform"
+      },
+      "annotations": {
+        "value": "0.23"
+      }
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "KubernetesPodCrashLooping",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "warning"
+      },
+      "annotations": {
+        "value": "18"
+      }
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "HighLatency",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "warning"
+      },
+      "annotations": {
+        "value": "4200"
+      }
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "DatabaseConnectionPoolHigh",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "warning"
+      },
+      "annotations": {
+        "value": "0.91"
+      }
+    }
   ],
   "context": {
-    "kubernetes": {"desired_replicas": 20, "available_replicas": 12, "restarts_last_10m": 18},
-    "traffic": {"requests_per_second": 1800, "http_5xx_rate": 0.23, "p99_latency_ms": 4200},
-    "deployment": {"deployed_minutes_ago": 9, "version": "checkout-api:3.42", "previous_version": "checkout-api:3.41"}
+    "kubernetes": {
+      "desired_replicas": 20,
+      "available_replicas": 12,
+      "restarts_last_10m": 18
+    },
+    "traffic": {
+      "requests_per_second": 1800,
+      "http_5xx_rate": 0.23,
+      "p99_latency_ms": 4200
+    },
+    "deployment": {
+      "deployed_minutes_ago": 9,
+      "version": "checkout-api:3.42",
+      "previous_version": "checkout-api:3.41"
+    }
   }
 }

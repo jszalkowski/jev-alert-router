@@ -13,6 +13,7 @@ from src.policy import decide_route
 from src.routing import render
 
 FIX = Path(__file__).parent.parent / "fixtures"
+from fixtures import load
 ORDER = ["production-outage.json", "dev-cpu-spike.json",
          "deployment-regression.json", "ambiguous-alert.json"]
 
@@ -20,7 +21,7 @@ ORDER = ["production-outage.json", "dev-cpu-spike.json",
 def main() -> int:
     names = sys.argv[1:] or ORDER
     for i, name in enumerate(names, 1):
-        payload = json.loads((FIX / name).read_text())
+        payload = load(name)
         alerts = normalize(payload)
         for key, group in group_alerts(alerts).items():
             ctx = build_context(f"inc-{i:03d}", group, payload.get("context", {}))

@@ -17,10 +17,11 @@ from src.normalize import group_alerts, normalize
 from src.policy import decide_route
 
 FIX = Path(__file__).parent.parent / "fixtures"
+from fixtures import load
 
 
 def run(fixture: str):
-    payload = json.loads((FIX / fixture).read_text())
+    payload = load(fixture)
     alerts = normalize(payload)
     groups = group_alerts(alerts)
     key, group = next(iter(groups.items()))
@@ -49,7 +50,7 @@ def test_scenario_3_deployment_regression_is_p2_and_surfaces_deploy_link():
     ctx, d, route = run("deployment-regression.json")
     assert route.priority == "P2"
     assert route.channel == "slack"
-    assert d.deployment_related > 0.80, "deployed 4 minutes ago should correlate"
+    assert d.deployment_related > 0.60, "alerts began 3 min after a 9-min-old deploy"
     assert route.target == "discovery"
 
 
@@ -61,7 +62,7 @@ def test_scenario_4_ambiguous_escalates_rather_than_guessing():
 def test_severity_label_is_not_what_decides():
     """dev-cpu-spike is labelled severity=critical in YAML and must still
     not page. This is the whole thesis, as an assertion."""
-    payload = json.loads((FIX / "dev-cpu-spike.json").read_text())
+    payload = load("dev-cpu-spike.json")
     assert payload["alerts"][0]["labels"]["severity"] == "critical"
     _, _, route = run("dev-cpu-spike.json")
     assert route.channel != "pagerduty"

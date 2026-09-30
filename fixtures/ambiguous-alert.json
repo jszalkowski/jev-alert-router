@@ -1,16 +1,46 @@
 {
-  "version": "4", "status": "firing",
+  "_alert_age_minutes": 6,
+  "version": "4",
+  "status": "firing",
   "alerts": [
-    { "status": "firing", "startsAt": "2026-09-30T10:59:16.323949Z",
-      "labels": {"alertname":"ElevatedErrorRate","service":"checkout-api","namespace":"prod","severity":"warning"},
-      "annotations": {"value":"0.15"} },
-    { "status": "firing", "startsAt": "2026-09-30T10:59:16.323949Z",
-      "labels": {"alertname":"PodNotReady","service":"checkout-api","namespace":"prod","severity":"warning"},
-      "annotations": {"value":"2"} }
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "ElevatedErrorRate",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "warning"
+      },
+      "annotations": {
+        "value": "0.15"
+      }
+    },
+    {
+      "status": "firing",
+      "labels": {
+        "alertname": "PodNotReady",
+        "service": "checkout-api",
+        "namespace": "prod",
+        "severity": "warning"
+      },
+      "annotations": {
+        "value": "2"
+      }
+    }
   ],
   "context": {
-    "kubernetes": {"desired_replicas": 8, "available_replicas": 6, "restarts_last_10m": 3},
-    "traffic": {"requests_per_second": 400, "http_5xx_rate": 0.15, "p99_latency_ms": 1400},
-    "deployment": {"deployed_minutes_ago": 50}
+    "kubernetes": {
+      "desired_replicas": 8,
+      "available_replicas": 6,
+      "restarts_last_10m": 3
+    },
+    "traffic": {
+      "requests_per_second": 400,
+      "http_5xx_rate": 0.15,
+      "p99_latency_ms": 1400
+    },
+    "deployment": {
+      "deployed_minutes_ago": 50
+    }
   }
 }

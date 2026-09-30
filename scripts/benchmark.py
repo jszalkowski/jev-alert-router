@@ -21,6 +21,7 @@ from src.normalize import group_alerts, normalize
 from src.policy import decide_route
 
 FIX = Path(__file__).parent.parent / "fixtures"
+from fixtures import load
 FIXTURES = ["production-outage.json", "dev-cpu-spike.json",
             "deployment-regression.json", "ambiguous-alert.json"]
 QUESTIONS_PER_INCIDENT = 6   # 4 Noul + 1 Choice + 1 Score, one request
@@ -32,7 +33,7 @@ def main() -> int:
 
     for i in range(runs):
         name = FIXTURES[i % len(FIXTURES)]
-        payload = json.loads((FIX / name).read_text())
+        payload = load(name)
         group = next(iter(group_alerts(normalize(payload)).values()))
         ctx = build_context(f"bench-{i}", group, payload.get("context", {}))
 

@@ -24,6 +24,7 @@ from src.normalize import group_alerts, normalize
 from src.policy import decide_route
 
 FIX = Path(__file__).parent.parent / "fixtures"
+from fixtures import load
 
 # A labelled set. Four rows is not an evaluation; it is a smoke test with
 # opinions. Replace it with your own incidents before believing anything.
@@ -40,7 +41,7 @@ LABELS = [
 
 
 def run_one(fixture: str):
-    payload = json.loads((FIX / fixture).read_text())
+    payload = load(fixture)
     group = next(iter(group_alerts(normalize(payload)).values()))
     ctx = build_context("eval", group, payload.get("context", {}))
     d = decide(ctx)
