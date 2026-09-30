@@ -47,39 +47,63 @@ def _questions():
 
     return {
         "customer_impact": Noul(
-            instructions="Is there evidence that real users are currently affected?",
+            instructions=(
+                "Is there evidence that real users are currently affected? Weigh "
+                "`traffic.http_5xx_rate`, `traffic.p99_latency_ms` and "
+                "`traffic.requests_per_second`: a high error rate with no traffic "
+                "affects nobody."
+            ),
             criteria=NoulCriteria(
                 true="Error rates, latency or availability indicate users are experiencing failures right now",
                 false="The service is degraded internally but user-facing behaviour appears unaffected, or there is no user traffic",
             ),
         ),
         "material_degradation": Noul(
-            instructions="Is the service materially degraded relative to normal operation?",
+            instructions=(
+                "Is the service materially degraded relative to normal operation? "
+                "Consider `traffic.http_5xx_rate`, `kubernetes.unavailable_fraction` "
+                "and `kubernetes.restarts_last_10m`."
+            ),
             criteria=NoulCriteria(
                 true="Key signals are well outside a normal operating range",
                 false="Signals are elevated but within a range the service routinely handles",
             ),
         ),
         "requires_immediate_attention": Noul(
-            instructions="Does this situation require a human to act now, rather than during business hours?",
+            instructions=(
+                "Does this situation require a human to act now, rather than during "
+                "business hours? Consider `service.environment`, "
+                "`service.criticality` and whether `traffic` shows live user demand."
+            ),
             criteria=NoulCriteria(
                 true="Waiting would allow the situation to worsen or prolong user harm",
                 false="The situation is stable, self-recovering, or confined to a non-production environment",
             ),
         ),
         "deployment_related": Noul(
-            instructions="Is this plausibly caused by the most recent deployment?",
+            instructions=(
+                "Is this plausibly caused by the most recent deployment? Compare "
+                "`deployment.deployed_minutes_ago` with `alerts[].duration_seconds`; "
+                "absent deployment data is not evidence of a link."
+            ),
             criteria=NoulCriteria(
                 true="The symptoms began close in time to a recent deployment of this service",
                 false="There was no recent deployment, or the timing does not line up",
             ),
         ),
         "domain": Choice(
-            instructions="Which domain does this incident most likely belong to?",
+            instructions=(
+                "Which domain does this incident most likely belong to? Use "
+                "`alert_names`, `kubernetes` and `traffic` as evidence."
+            ),
             criteria=DOMAINS,
         ),
         "impact": Score(
-            instructions="How severe is the impact on users of this service right now?",
+            instructions=(
+                "How severe is the impact on users of this service right now? Judge "
+                "from `traffic` and `kubernetes.unavailable_fraction`, scaled by "
+                "`service.customer_facing`."
+            ),
             criteria=IMPACT_LEVELS,
         ),
     }
@@ -96,10 +120,19 @@ def _nearest_level(score: float) -> str:
 def _mock(ctx: IncidentContext) -> Decisions:
     """A deterministic stand-in so the repo runs with no API key.
 
-    This is NOT a prediction of what Jev would answer. It is a transparent
-    heuristic over the same context, so the surrounding architecture
-    (policy, routing, escalation) can be exercised and tested offline.
-    Live mode is the only mode that tells you anything about Jev.
+    This is NOT a prediction of what Jev would answer.
+
+    IMPORTANT SEMANTIC CAVEAT. This mock ramps its Noul outputs with severity,
+    which is convenient for exercising policy but is NOT what a Noul means.
+    Per TypeSafe's own guidance: "A Noul near 0.5 means similar probability for
+    yes and no, not medium intensity." Real Jev answering "are users affected?"
+    for a clearly-but-mildly degraded service should return a HIGH probability
+    (users are affected; it is simply not severe), not a middling one. Intensity
+    belongs in the Score primitive, which is why `impact` exists.
+
+    Consequence: mock Noul values are usable for testing thresholds and routing
+    paths, and are misleading about semantics. Live mode is the only mode that
+    tells you anything about Jev.
     """
     svc, k8s, traf, dep = ctx.service, ctx.kubernetes, ctx.traffic, ctx.deployment
     prod = svc.environment == "production"

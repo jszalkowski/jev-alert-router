@@ -139,4 +139,15 @@ deliberately), and not something to put in front of your pager without weeks of
 shadow data. See [docs/architecture.md](docs/architecture.md) for the failure
 modes, including what happens on untrusted alert text.
 
-Built against `typesafe-sdk` 0.7.2 and the TypeSafe docs as of September 2026.
+Built against `typesafe-sdk` 0.7.2 and the TypeSafe docs as of September 2026,
+following TypeSafe's [official agent skill](https://github.com/typesafe-ai/skills)
+(`claude plugin install typesafe@typesafe-ai`).
+
+### Verification status
+
+| | |
+|---|---|
+| Clean clone → install → `pytest` → `demo.py` → `uvicorn` → `curl` | **verified end to end** |
+| Fail-safe when the decision layer is unavailable | **verified** (no API key → static fallback → still pages) |
+| `JEV_MODE=live` against the real API | **never executed.** No API key was available. The request is built against the documented schema and the SDK types, but no Jev response has been parsed by this code. |
+| `Dockerfile` / `docker-compose.yml` | **unverified.** No Docker daemon available at build time. YAML parses; the image has never been built. |

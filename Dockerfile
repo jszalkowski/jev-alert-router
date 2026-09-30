@@ -1,8 +1,9 @@
 FROM python:3.12-slim
 WORKDIR /app
-COPY pyproject.toml ./
-RUN pip install --no-cache-dir "typesafe-sdk>=0.7.2" "pydantic>=2" "fastapi>=0.110" "uvicorn>=0.27"
+# Install from pyproject so the image cannot drift from the declared deps.
+COPY pyproject.toml README.md ./
 COPY src/ ./src/
+RUN pip install --no-cache-dir .
 COPY fixtures/ ./fixtures/
 COPY scripts/ ./scripts/
 ENV JEV_MODE=mock ROUTER_DRY_RUN=true
