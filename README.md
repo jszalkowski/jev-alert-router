@@ -19,7 +19,7 @@ It answers bounded questions about state. Every consequence lives in
 No API key, no cluster, no network:
 
 ```bash
-git clone https://github.com/<you>/jev-alert-router && cd jev-alert-router
+git clone https://github.com/jszalkowski/jev-alert-router && cd jev-alert-router
 uv venv && uv pip install -e ".[dev]"
 JEV_MODE=mock python scripts/demo.py
 ```
