@@ -1,0 +1,36 @@
+# The rule from the article. Nothing wrong with it - it measures exactly what
+# it says. The problem is the last two lines: a severity decided months ago,
+# in YAML, by someone who could not know the runtime context in which it
+# would eventually fire.
+groups:
+  - name: api
+    rules:
+      - alert: HighHttpErrorRate
+        expr: |
+          sum(rate(http_requests_total{code=~"5.."}[5m])) by (service, namespace)
+            /
+          sum(rate(http_requests_total[5m])) by (service, namespace)
+            > 0.05
+        for: 5m
+        labels:
+          severity: critical      # <- always? in dev too? during a deploy?
+          team: platform          # <- still the owner six months from now?
+        annotations:
+          summary: "{{ $labels.service }} 5xx rate above 5%"
+          value: "{{ $value }}"
+
+      - alert: KubernetesPodCrashLooping
+        expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          value: "{{ $value }}"
+
+      - alert: HighLatency
+        expr: histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le, service)) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          value: "{{ $value }}"

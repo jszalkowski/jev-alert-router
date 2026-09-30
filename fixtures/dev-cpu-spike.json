@@ -1,0 +1,13 @@
+{
+  "version": "4", "status": "firing",
+  "alerts": [
+    { "status": "firing", "startsAt": "2026-09-30T10:54:58.006105Z",
+      "labels": {"alertname":"HighCpuUsage","service":"image-resizer","namespace":"dev","environment":"development","severity":"critical"},
+      "annotations": {"value":"0.92"} }
+  ],
+  "context": {
+    "kubernetes": {"desired_replicas": 2, "available_replicas": 2, "restarts_last_10m": 0},
+    "traffic": {"requests_per_second": 0.3, "http_5xx_rate": 0.0, "p99_latency_ms": 120},
+    "deployment": {}
+  }
+}

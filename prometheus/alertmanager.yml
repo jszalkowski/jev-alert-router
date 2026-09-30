@@ -1,0 +1,19 @@
+# Shadow mode: keep your existing route, add the router as a second receiver.
+# Nothing the router says can page anyone while ROUTER_DRY_RUN=true.
+route:
+  receiver: existing-pagerduty
+  group_by: [service, namespace]
+  group_wait: 30s
+  routes:
+    - receiver: jev-router-shadow
+      continue: true          # <- the important line: both receivers fire
+
+receivers:
+  - name: existing-pagerduty
+    pagerduty_configs:
+      - routing_key: "<your-existing-key>"
+
+  - name: jev-router-shadow
+    webhook_configs:
+      - url: http://jev-alert-router:8000/alerts
+        send_resolved: false

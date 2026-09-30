@@ -1,0 +1,18 @@
+[project]
+name = "jev-alert-router"
+version = "0.1.0"
+description = "Context-aware alert prioritisation: Jev makes judgments, code owns policy."
+requires-python = ">=3.10"
+dependencies = [
+    "typesafe-sdk>=0.7.2",
+    "pydantic>=2.0",
+    "fastapi>=0.110",
+    "uvicorn>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "httpx>=0.27"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

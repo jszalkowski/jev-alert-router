@@ -1,0 +1,26 @@
+{
+  "checkout-api": {
+    "environment": "production",
+    "criticality": "tier-1",
+    "owner": "payments",
+    "customer_facing": true
+  },
+  "search-api": {
+    "environment": "production",
+    "criticality": "tier-2",
+    "owner": "discovery",
+    "customer_facing": true
+  },
+  "image-resizer": {
+    "environment": "development",
+    "criticality": "tier-3",
+    "owner": "media",
+    "customer_facing": false
+  },
+  "reporting-worker": {
+    "environment": "production",
+    "criticality": "tier-3",
+    "owner": "analytics",
+    "customer_facing": false
+  }
+}

@@ -1,0 +1,9 @@
+services:
+  router:
+    build: .
+    ports: ["8000:8000"]
+    environment:
+      # mock needs no API key and no network
+      JEV_MODE: ${JEV_MODE:-mock}
+      TYPESAFE_API_KEY: ${TYPESAFE_API_KEY:-}
+      ROUTER_DRY_RUN: "true"
